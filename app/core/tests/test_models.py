@@ -22,7 +22,7 @@ class ModelTests(TestCase):
 
     def test_new_user_email_normalized(self):
         """Test Email is normalized for new users"""
-        sample_email=[
+        sample_email = [
             ['test1@EXAMPLE.COM', 'test1@example.com'],
             ['Test1@Example.com', 'Test1@example.com'],
             ['TEST1@EXAMPLE.COM', 'TEST1@example.com'],
@@ -30,7 +30,7 @@ class ModelTests(TestCase):
         ]
         for email, expected in sample_email:
             user = get_user_model().objects.create_user(email, 'sample123')
-            self.assertEqual(user.email,expected)
+            self.assertEqual(user.email, expected)
 
     def test_new_user_without_email_raises_error(self):
         """test that creating a user without an email raises a ValueError."""
