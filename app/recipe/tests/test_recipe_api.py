@@ -19,6 +19,7 @@ from recipe.serializers import (
 
 RECIPES_URL = reverse('recipe:recipe-list')
 
+
 def detail_url(recipe_id):
     """Create and return a recipe detail URL."""
     return reverse('recipe:recipe-detail', args=[recipe_id])
@@ -27,7 +28,7 @@ def detail_url(recipe_id):
 def create_recipe(user, **params):
     """Create and return example recipe"""
     defaults = {
-        'title':'Sample Recipe title',
+        'title': 'Sample Recipe title',
         'time_minutes': 22,
         'price': Decimal('5.25'),
         'description': 'Sample Description',
@@ -35,13 +36,13 @@ def create_recipe(user, **params):
     }
     defaults.update(params)
 
-    recipe = Recipe.objects.create(user= user, **defaults)
+    recipe = Recipe.objects.create(user=user, **defaults)
     return recipe
+
 
 def create_user(**params):
     """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
-
 
 
 class PublicRecipeApiTests(TestCase):
@@ -67,14 +68,14 @@ class PrivateRecipeApiTests(TestCase):
 
     def test_retrieve_recipes(self):
         """test retrieving a list of recipes"""
-        create_recipe(user= self.user)
-        create_recipe(user= self.user)
+        create_recipe(user=self.user)
+        create_recipe(user=self.user)
 
         res = self.client.get(RECIPES_URL)
 
-        recipes = Recipe.objects.all().order_by ('-id')
+        recipes = Recipe.objects.all().order_by('-id')
         serializer = RecipeSerializers(recipes, many=True)
-        self.assertEqual(res.status_code, status.HTTP_200_OK )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
     def test_recipe_list_limited_to_user(self):
@@ -89,7 +90,7 @@ class PrivateRecipeApiTests(TestCase):
         recipes = Recipe.objects.filter(user=self.user)
         serializer = RecipeSerializers(recipes, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data,serializer.data)
+        self.assertEqual(res.data, serializer.data)
 
     def test_get_recipe_detail(self):
         """Test get the recioe detail"""
@@ -104,7 +105,7 @@ class PrivateRecipeApiTests(TestCase):
     def test_create_a_recipe(self):
         """Test create a recipe through API"""
         payload = {
-            'title':'Sample Recipe',
+            'title': 'Sample Recipe',
             'time_minutes': 30,
             'price': Decimal('5.99'),
         }
@@ -112,9 +113,9 @@ class PrivateRecipeApiTests(TestCase):
         res = self.client.post(RECIPES_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        recipe = Recipe.objects.get(id = res.data['id'])
+        recipe = Recipe.objects.get(id=res.data['id'])
         for k, v in payload.items():
-            self.assertEqual(getattr(recipe, k),v)
+            self.assertEqual(getattr(recipe, k), v)
         self.assertEqual(recipe.user, self.user)
 
     def test_partial_update(self):
