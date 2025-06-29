@@ -25,6 +25,7 @@ from core.models import (
 )
 from recipe import serializers
 
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -54,7 +55,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Retrieve recipes for authenticated user"""
-        #return self.queryset.filter(user=self.request.user).order_by('-id')
         tags = self.request.query_params.get('tags')
         ingredients = self.request.query_params.get('ingredients')
         queryset = self.queryset
@@ -65,7 +65,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ingredient_ids = self._params_to_int(ingredients)
             queryset = queryset.filter(ingredients__id__in=ingredient_ids)
 
-        return queryset.filter(user=self.request.user).order_by('-id').distinct()
+        return queryset.filter(
+            user=self.request.user
+            ).order_by('-id').distinct()
 
     def get_serializer_class(self):
         """Return the serializer class for request"""
@@ -92,6 +94,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema_view(
     list=extend_schema(
         parameters=[
@@ -113,7 +116,6 @@ class BaseRecipeAttrViewSet(mixins.DestroyModelMixin,
 
     def get_queryset(self):
         """Filter queryset to authenticate user"""
-        #return self.queryset.filter(user=self.request.user).order_by('-name')
         assigned_only = bool(
             int(self.request.query_params.get('assigned_only', 0))
             )
