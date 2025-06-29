@@ -1,7 +1,7 @@
 """
 Views for the recipe Apis
 """
-from drf_spectacular.utils import(
+from drf_spectacular.utils import (
     extend_schema_view,
     extend_schema,
     OpenApiParameter,
